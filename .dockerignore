@@ -1,0 +1,7 @@
+.monzo_env/
+.git/
+.gitignore
+archive/
+data/database_files/
+src/logs/monzo_etl.log
+src/.env

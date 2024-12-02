@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  monzo-etl:
+    build: .
+    volumes:
+      - ~/.aws:/root/.aws:ro
+      - ./src/logs:/app/src/logs
+    environment:
+      - AWS_DEFAULT_REGION=eu-north-1
+    command: python src/main.py
