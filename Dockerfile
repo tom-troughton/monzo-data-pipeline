@@ -1,20 +1,13 @@
-# Dockerfile
-FROM python:3.12-slim
+FROM public.ecr.aws/lambda/python:3.9
 
-WORKDIR /app
+# Copy requirements.txt
+COPY requirements.txt ${LAMBDA_TASK_ROOT}
 
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+# Install dependencies
+RUN pip install -r requirements.txt
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy function code
+COPY src/ ${LAMBDA_TASK_ROOT}/src/
 
-# Copy the entire src directory
-COPY src/ /app/src/
-
-# Create logs directory
-RUN mkdir -p /app/src/logs
-
-# Command to run the ETL
-CMD ["python", "src/main.py"]
+# Set the CMD to your handler
+CMD [ "src.main.lambda_handler" ]
