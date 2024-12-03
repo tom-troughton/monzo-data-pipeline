@@ -16,13 +16,13 @@ COPY src ${LAMBDA_TASK_ROOT}/src
 # Create logs directory in /tmp
 RUN mkdir -p /tmp/logs
 
-# Debug: List contents to verify file structure
+# Debug: List contents
 RUN echo "Contents of ${LAMBDA_TASK_ROOT}:" && \
     ls -la ${LAMBDA_TASK_ROOT} && \
     echo "\nContents of ${LAMBDA_TASK_ROOT}/src:" && \
     ls -la ${LAMBDA_TASK_ROOT}/src
 
-# Add both the Lambda task root AND src directory to PYTHONPATH
+# Add both directories to PYTHONPATH
 ENV PYTHONPATH "${LAMBDA_TASK_ROOT}:${LAMBDA_TASK_ROOT}/src"
 
 # Set the handler

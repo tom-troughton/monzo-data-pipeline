@@ -4,20 +4,15 @@ Monzo ETL Pipeline
 import os
 import time
 import logging
-from datetime import datetime
-from botocore.exceptions import ClientError
+import requests
 import json
 import boto3
 import sqlite3
 import logging
 import shutil
+from botocore.exceptions import ClientError
 from logging.handlers import RotatingFileHandler
-from datetime import datetime, timedelta
 from typing import Dict, List, Any
-from api import MonzoAPIClient
-import json
-import boto3
-import requests
 from datetime import datetime, timedelta, UTC
 
 class MonzoTokenManager:
@@ -892,7 +887,28 @@ class MonzoSQLiteETL:
             self.logger.error(f"ETL process failed: {str(e)}")
             raise
 
+def lambda_handler(event=None, context=None):
+    try:
+        os.makedirs('/tmp/logs', exist_ok=True)
 
+        etl = MonzoSQLiteETL(
+            db_path='/tmp/monzo_dashboard.db', 
+            log_path='/tmp/logs/monzo_etl.log', 
+            s3_local_path='/tmp/monzo_dashboard.db'
+        )
+        etl.run_etl()
+
+        return {
+            'statusCode': 200,
+            'body': 'ETL process completed successfully'
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': f'Error: {str(e)}'
+        }
+
+# Keep this for local non-Lambda execution
 if __name__ == "__main__":
-    etl = MonzoSQLiteETL(db_path='src/monzo_dashboard.db', log_path='src/logs/monzo_etl.log', s3_local_path='src/monzo_dashboard.db')
-    etl.run_etl()
+    lambda_handler(None, None)
+
