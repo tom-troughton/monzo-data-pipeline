@@ -7,8 +7,12 @@ import shutil
 from logging.handlers import RotatingFileHandler
 from datetime import datetime, timedelta
 from typing import Dict, List, Any
-from api import MonzoAPIClient
 from .etl_logging import S3LogHandler
+try:
+    from src.api.monzo_api_client import MonzoAPIClient
+except ImportError:
+    from api.monzo_api_client import MonzoAPIClient
+
 
 class MonzoSQLiteETL:
     def __init__(
