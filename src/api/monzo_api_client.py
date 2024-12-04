@@ -26,7 +26,9 @@ class MonzoTokenManager:
             tokens (dict): Token data including access_token, refresh_token, and expires_in
         """
         table = self.dynamodb.Table(self.table_name)
-        expiry = datetime.now(UTC) + timedelta(seconds=tokens['expires_in'])
+        # Default to 4 hours if expires_in is not provided
+        expires_in = tokens.get('expires_in', 14400)  
+        expiry = datetime.now(UTC) + timedelta(seconds=expires_in)
         
         table.put_item(Item={
             'token_id': 'current',
@@ -44,7 +46,7 @@ class MonzoTokenManager:
 
     def refresh_token(self, refresh_token):
         """
-        Get new access token using refresh token.
+        Get new access token using refresh token and update stored refresh token.
         
         Args:
             refresh_token (str): The refresh token to use
@@ -61,7 +63,35 @@ class MonzoTokenManager:
                 'refresh_token': refresh_token
             }
         )
-        return response.json()
+        
+        # Check if the request was successful
+        if response.status_code != 200:
+            error_data = response.json()
+            if error_data.get('code') == 'unauthorized.bad_refresh_token.evicted':
+                raise Exception(
+                    "Authentication required: Your session has expired due to a login elsewhere. "
+                    "Please complete the OAuth flow again to obtain new tokens."
+                )
+            raise Exception(f"Token refresh failed: {response.text}")
+        
+        new_tokens = response.json()
+        
+        # If refresh_token is not in response, use the existing one
+        if 'refresh_token' not in new_tokens:
+            new_tokens['refresh_token'] = refresh_token
+        
+        # Update the refresh token in AWS Secrets Manager
+        secrets_manager = boto3.client('secretsmanager')
+        secret_response = secrets_manager.get_secret_value(SecretId='monzo-api-credentials')
+        credentials = json.loads(secret_response['SecretString'])
+        credentials['monzo_refresh_token'] = new_tokens['refresh_token']
+        
+        secrets_manager.put_secret_value(
+            SecretId='monzo-api-credentials',
+            SecretString=json.dumps(credentials)
+        )
+        
+        return new_tokens
 
     def get_valid_token(self):
         """
@@ -74,7 +104,7 @@ class MonzoTokenManager:
         
         if not stored_tokens:
             return {
-                'statusCode': 400,
+                'statusCode': 401,
                 'body': json.dumps({
                     'error': 'No valid tokens found. Initial authentication required.'
                 })
@@ -83,17 +113,29 @@ class MonzoTokenManager:
         expires_at = datetime.fromisoformat(stored_tokens['expires_at'])
         
         if expires_at - datetime.now(UTC) < timedelta(minutes=5):
-            new_tokens = self.refresh_token(stored_tokens['refresh_token'])
-            self.store_tokens(new_tokens)
-            return {
-                'statusCode': 200,
-                'body': json.dumps({'access_token': new_tokens['access_token']})
-            }
+            try:
+                # Get the up-to-date refresh token from AWS Secrets Manager
+                current_refresh_token = get_secret('monzo-api-credentials')['monzo_refresh_token']
+
+                new_tokens = self.refresh_token(current_refresh_token)
+                self.store_tokens(new_tokens)
+                return {
+                    'statusCode': 200,
+                    'body': json.dumps({'access_token': new_tokens['access_token']})
+                }
+            except Exception as e:
+                return {
+                    'statusCode': 401,
+                    'body': json.dumps({
+                        'error': str(e),
+                        'requires_reauth': True
+                    })
+                }
         
         return {
             'statusCode': 200,
             'body': json.dumps({'access_token': stored_tokens['access_token']})
-        }
+            }
 
 class MonzoAPIClient:
     """
@@ -319,3 +361,13 @@ def get_secret(secret_name):
     client = session.client('secretsmanager')
     response = client.get_secret_value(SecretId=secret_name)
     return json.loads(response['SecretString'])
+
+def update_secret(secret_name, new_secret_value):
+    """Update secret in AWS Secrets Manager"""
+    session = boto3.session.Session()
+    client = session.client('secretsmanager')
+    response = client.put_secret_value(
+        SecretId=secret_name,
+        SecretString=json.dumps(new_secret_value)
+    )
+    return response
