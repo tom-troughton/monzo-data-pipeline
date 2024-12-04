@@ -32,7 +32,7 @@ class OAuthHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(b"Authorization successful! You can close this window.")
+            self.wfile.write(b"Authorisation successful! You can close this window.")
             
             # Stop the server
             raise KeyboardInterrupt
