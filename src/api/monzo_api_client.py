@@ -110,32 +110,32 @@ class MonzoTokenManager:
                 })
             }
 
-        expires_at = datetime.fromisoformat(stored_tokens['expires_at'])
+        # expires_at = datetime.fromisoformat(stored_tokens['expires_at'])
         
-        if expires_at - datetime.now(UTC) < timedelta(minutes=5):
-            try:
-                # Get the up-to-date refresh token from AWS Secrets Manager
-                current_refresh_token = get_secret('monzo-api-credentials')['monzo_refresh_token']
+        # if expires_at - datetime.now(UTC) < timedelta(minutes=5):
+        try:
+            # Get the up-to-date refresh token from AWS Secrets Manager
+            current_refresh_token = get_secret('monzo-api-credentials')['monzo_refresh_token']
 
-                new_tokens = self.refresh_token(current_refresh_token)
-                self.store_tokens(new_tokens)
-                return {
-                    'statusCode': 200,
-                    'body': json.dumps({'access_token': new_tokens['access_token']})
-                }
-            except Exception as e:
-                return {
-                    'statusCode': 401,
-                    'body': json.dumps({
-                        'error': str(e),
-                        'requires_reauth': True
-                    })
-                }
-        
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'access_token': stored_tokens['access_token']})
+            new_tokens = self.refresh_token(current_refresh_token)
+            self.store_tokens(new_tokens)
+            return {
+                'statusCode': 200,
+                'body': json.dumps({'access_token': new_tokens['access_token']})
             }
+        except Exception as e:
+            return {
+                'statusCode': 401,
+                'body': json.dumps({
+                    'error': str(e),
+                    'requires_reauth': True
+                })
+            }
+        
+        # return {
+        #     'statusCode': 200,
+        #     'body': json.dumps({'access_token': stored_tokens['access_token']})
+        #     }
 
 class MonzoAPIClient:
     """
