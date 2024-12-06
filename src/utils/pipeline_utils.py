@@ -445,16 +445,157 @@ class MonzoSQLiteETL:
             self.insert_pot(pot, conn)
         self.logger.info(f"Successfully inserted {len(pots)} pots")
 
+    def create_analytics_views(self, conn):
+        """Create or replace analytics views in the database"""
+        self.logger.info("Creating analytics views")
+        
+        try:
+            cursor = conn.cursor()
+            
+            # Store all view definitions
+            views = {
+                'daily_transactions_summary': '''
+                    CREATE VIEW IF NOT EXISTS daily_transactions_summary AS
+                    SELECT 
+                        date(created) as transaction_date,
+                        COUNT(*) as num_transactions,
+                        SUM(CASE WHEN amount < 0 THEN amount * -1 ELSE 0 END) / 100.0 as total_spend,
+                        SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END) / 100.0 as total_income,
+                        AVG(CASE WHEN amount < 0 THEN amount * -1 ELSE NULL END) / 100.0 as avg_transaction_value,
+                        COUNT(CASE WHEN merchant_online = 1 THEN 1 END) as online_transactions,
+                        COUNT(CASE WHEN merchant_atm = 1 THEN 1 END) as atm_transactions
+                    FROM transactions
+                    GROUP BY date(created)
+                    ORDER BY transaction_date DESC
+                ''',
+                'category_spending_summary': '''
+                    CREATE VIEW IF NOT EXISTS category_spending_summary AS
+                    SELECT 
+                        category,
+                        COUNT(*) as transaction_count,
+                        SUM(CASE WHEN amount < 0 THEN amount * -1 ELSE 0 END) / 100.0 as total_spend,
+                        AVG(CASE WHEN amount < 0 THEN amount * -1 ELSE NULL END) / 100.0 as avg_transaction_value,
+                        MIN(created) as first_transaction,
+                        MAX(created) as last_transaction
+                    FROM transactions
+                    WHERE amount < 0
+                    GROUP BY category
+                    ORDER BY total_spend DESC
+                ''',
+                'merchant_spending_patterns': '''
+                    CREATE VIEW IF NOT EXISTS merchant_spending_patterns AS
+                    SELECT 
+                        merchant_name,
+                        merchant_category,
+                        COUNT(*) as visit_count,
+                        SUM(CASE WHEN amount < 0 THEN amount * -1 ELSE 0 END) / 100.0 as total_spend,
+                        AVG(CASE WHEN amount < 0 THEN amount * -1 ELSE NULL END) / 100.0 as avg_spend_per_visit,
+                        MIN(created) as first_visit,
+                        MAX(created) as last_visit,
+                        merchant_city,
+                        merchant_country,
+                        merchant_online
+                    FROM transactions
+                    WHERE merchant_name IS NOT NULL
+                    AND amount < 0
+                    GROUP BY 
+                        merchant_name,
+                        merchant_category,
+                        merchant_city,
+                        merchant_country,
+                        merchant_online
+                    HAVING visit_count > 1
+                    ORDER BY total_spend DESC
+                ''',
+                'monthly_spending_trends': '''
+                    CREATE VIEW IF NOT EXISTS monthly_spending_trends AS
+                    SELECT 
+                        strftime('%Y-%m', created) as month,
+                        category,
+                        COUNT(*) as transaction_count,
+                        SUM(CASE WHEN amount < 0 THEN amount * -1 ELSE 0 END) / 100.0 as total_spend,
+                        AVG(CASE WHEN amount < 0 THEN amount * -1 ELSE NULL END) / 100.0 as avg_transaction_value
+                    FROM transactions
+                    WHERE amount < 0
+                    GROUP BY 
+                        strftime('%Y-%m', created),
+                        category
+                    ORDER BY 
+                        month DESC,
+                        total_spend DESC
+                ''',
+                'location_spending': '''
+                    CREATE VIEW IF NOT EXISTS location_spending AS
+                    SELECT 
+                        merchant_city,
+                        merchant_country,
+                        COUNT(*) as transaction_count,
+                        COUNT(DISTINCT merchant_name) as unique_merchants,
+                        SUM(CASE WHEN amount < 0 THEN amount * -1 ELSE 0 END) / 100.0 as total_spend,
+                        AVG(CASE WHEN amount < 0 THEN amount * -1 ELSE NULL END) / 100.0 as avg_transaction_value
+                    FROM transactions
+                    WHERE merchant_city IS NOT NULL
+                    AND amount < 0
+                    GROUP BY 
+                        merchant_city,
+                        merchant_country
+                    ORDER BY total_spend DESC
+                ''',
+                'income_sources': '''
+                    CREATE VIEW IF NOT EXISTS income_sources AS
+                    SELECT 
+                        description,
+                        counterparty_name,
+                        COUNT(*) as payment_count,
+                        SUM(amount) / 100.0 as total_amount,
+                        AVG(amount) / 100.0 as avg_amount,
+                        MIN(created) as first_payment,
+                        MAX(created) as last_payment
+                    FROM transactions
+                    WHERE amount > 0
+                    AND NOT is_load
+                    GROUP BY 
+                        description,
+                        counterparty_name
+                    ORDER BY total_amount DESC
+                '''
+            }
+            
+            # Drop existing views if they exist and recreate them
+            for view_name, view_sql in views.items():
+                cursor.execute(f"DROP VIEW IF EXISTS {view_name}")
+                cursor.execute(view_sql)
+                self.logger.info(f"Created view: {view_name}")
+            
+            conn.commit()
+            self.logger.info("Successfully created all analytics views")
+            
+        except sqlite3.Error as e:
+            self.logger.error(f"Failed to create analytics views: {str(e)}")
+            raise
+
+    def verify_views(self, conn):
+        """Verify that all views were created successfully"""
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='view'")
+            views = cursor.fetchall()
+            view_names = [view[0] for view in views]
+            self.logger.info(f"Verified views: {', '.join(view_names)}")
+            return view_names
+        except sqlite3.Error as e:
+            self.logger.error(f"Failed to verify views: {str(e)}")
+            raise
+
     def run_etl(self, days_back: int = 30):
         """
-        Run the complete ETL process
+        Run the complete ETL process including creation of analytics views
         
         Args:
             days_back: Number of days of historical data to fetch
         """
         self.logger.info(f"Starting ETL process. Getting transactions for the previous {days_back} days")
         
-        # Initialize connection as None
         conn = None
         
         try:
@@ -464,7 +605,7 @@ class MonzoSQLiteETL:
             # Use a single connection for all database operations
             conn = sqlite3.connect(self.db_path)
             
-            # Initialise database if needed
+            # Initialize database tables
             self.initialise_database(conn)
             
             # Extract data from Monzo API
@@ -486,43 +627,28 @@ class MonzoSQLiteETL:
             num_pots = len(pots)
             self.logger.info(f"Processing {num_pots} pots")
             self.insert_pots(pots, conn)
+            
+            # Create analytics views
+            self.create_analytics_views(conn)
+            
+            # Verify views were created
+            created_views = self.verify_views(conn)
+            self.logger.info(f"Created {len(created_views)} analytics views")
 
             # Commit all changes
             conn.commit()
-
+            
             # Upload sqlite db to S3 bucket
             self.upload_sqlite_db()
             
             self.logger.info("ETL process completed successfully")
-
-            if self.save_db_path:
-                # Create timestamp and new filename
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                save_filename = f'monzo_db_{timestamp}.db'
-                save_path = os.path.join(self.save_db_path, save_filename)
-                
-                # Ensure directory exists
-                os.makedirs(self.save_db_path, exist_ok=True)
-                
-                # Copy the database file to the save location
-                shutil.copy2(self.db_path, save_path)
-                
+            
         except Exception as e:
             self.logger.error(f"ETL process failed: {str(e)}")
             if conn:
                 conn.rollback()
             raise
         finally:
-            # Close the database connection
             if conn:
                 conn.close()
-            
-            # Force upload logs if S3 is configured
             self.force_upload_logs()
-            
-            # Clean up the temporary database file
-            if os.path.exists(self.db_path):
-                try:
-                    os.remove(self.db_path)
-                except PermissionError:
-                    self.logger.warning("Could not remove database file - it may still be in use")
