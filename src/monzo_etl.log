@@ -1,0 +1,78 @@
+2024-12-06 10:40:12,986 - MonzoETL - INFO - Enabled S3 log uploading to bucket: monzo-db-bucket
+2024-12-06 10:40:12,986 - MonzoETL - INFO - Initialising MonzoSQLiteETL with database at /tmp/monzo_dashboard.db
+2024-12-06 10:40:12,987 - MonzoETL - INFO - Starting ETL process. Getting transactions for the previous 30 days
+2024-12-06 10:40:12,987 - MonzoETL - INFO - Monzo client access token test: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6IkpGaGxOZSt3bm52WktMbGNQTTBBIiwianRpIjoiYWNjdG9rXzAwMDBBb2xabVRoSVdPWWhDQzBEbWoiLCJ0eXAiOiJhdCIsInYiOiI2In0.KnGZeX7NVH0C1_nvRUwlUFEn1DJ5Q6Mo09tpJA48uTt_nLl9T87eIVdNxK6LJGI2ifU6vHwAOq1jLmX5Eg6Ghg
+2024-12-06 10:40:12,988 - MonzoETL - INFO - Monzo client credentials: {'monzo_refresh_token': 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6IkI4SVV2eFJ1SjJrT0JvK0JHVGxvIiwianRpIjoicmVmdG9rXzAwMDBBb2xaTlloWW1MWkdQd055aVgiLCJ0eXAiOiJydCIsInYiOiI2In0.DxUGMLtGhApb7tutYQRQVgh8_ul76sajgNErLCTVsm1Q9_yh_PXpt5iuhC6K-RKcjkjyVp52fDWyKXwWUAxQ0g', 'monzo_client_id': 'oauth2client_0000AoWDd0K3FrGVLstKan', 'monzo_client_secret': 'mnzconf.i1KIMvrG2ybs/oPFkanS/1qxmvU5oEDfDfXu6hg2vk9GZcpa0AsmcbhZoDJHzfDtcDZX8umC2lKPk9aiNaLzOQ==', 'monzo_account_id': 'acc_00009lqIsPMZoV0hiCGNft'}
+2024-12-06 10:40:13,543 - MonzoETL - INFO - Successfully downloaded database file from S3
+2024-12-06 10:40:13,544 - MonzoETL - INFO - Initialising database tables
+2024-12-06 10:40:13,571 - MonzoETL - INFO - Database tables created successfully
+2024-12-06 10:40:13,572 - MonzoETL - INFO - Retrieving data from Monzo API
+2024-12-06 10:40:13,638 - MonzoETL - ERROR - Failed to retrieve data: 401 Client Error: Unauthorized for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A40%3A13.572234Z
+2024-12-06 10:40:13,639 - MonzoETL - ERROR - ETL process failed: 401 Client Error: Unauthorized for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A40%3A13.572234Z
+2024-12-06 10:40:13,737 - MonzoETL - INFO - Forced upload of logs to S3 completed
+2024-12-06 10:41:34,702 - MonzoETL - INFO - Enabled S3 log uploading to bucket: monzo-db-bucket
+2024-12-06 10:41:34,702 - MonzoETL - INFO - Enabled S3 log uploading to bucket: monzo-db-bucket
+2024-12-06 10:41:34,702 - MonzoETL - INFO - Initialising MonzoSQLiteETL with database at /tmp/monzo_dashboard.db
+2024-12-06 10:41:34,702 - MonzoETL - INFO - Initialising MonzoSQLiteETL with database at /tmp/monzo_dashboard.db
+2024-12-06 10:41:34,703 - MonzoETL - INFO - Starting ETL process. Getting transactions for the previous 30 days
+2024-12-06 10:41:34,703 - MonzoETL - INFO - Starting ETL process. Getting transactions for the previous 30 days
+2024-12-06 10:41:34,704 - MonzoETL - INFO - Monzo client access token test: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6ImZnMGRUMXlaRjFQeFV6cTRlMnlkIiwianRpIjoiYWNjdG9rXzAwMDBBb2xadTEweDMyYVd1NXFQemQiLCJ0eXAiOiJhdCIsInYiOiI2In0.kygQ5bVryG4I7DEhoEfIsmYte8emMNaugWo6ujBCDJkE7wjGUuU3EO7sO6JjKPh3xgQh-98uqeytdVDbPT8cIA
+2024-12-06 10:41:34,704 - MonzoETL - INFO - Monzo client access token test: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6ImZnMGRUMXlaRjFQeFV6cTRlMnlkIiwianRpIjoiYWNjdG9rXzAwMDBBb2xadTEweDMyYVd1NXFQemQiLCJ0eXAiOiJhdCIsInYiOiI2In0.kygQ5bVryG4I7DEhoEfIsmYte8emMNaugWo6ujBCDJkE7wjGUuU3EO7sO6JjKPh3xgQh-98uqeytdVDbPT8cIA
+2024-12-06 10:41:34,705 - MonzoETL - INFO - Monzo client credentials: {'monzo_refresh_token': 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6IlBwQ1cvc05JcS9NYUx4V3NmUWpQIiwianRpIjoicmVmdG9rXzAwMDBBb2xadGF2azFta3c2S1ZLZHQiLCJ0eXAiOiJydCIsInYiOiI2In0.WGUdAW7gTWxK_NeB-rgE3fpt6pwGpYS2V89Gf_iZsIDZRyshH65zNdXLRSS-rs7RbDyT_9aTG8hPHnwIknmndg', 'monzo_client_id': 'oauth2client_0000AoWDd0K3FrGVLstKan', 'monzo_client_secret': 'mnzconf.i1KIMvrG2ybs/oPFkanS/1qxmvU5oEDfDfXu6hg2vk9GZcpa0AsmcbhZoDJHzfDtcDZX8umC2lKPk9aiNaLzOQ==', 'monzo_account_id': 'acc_00009lqIsPMZoV0hiCGNft'}
+2024-12-06 10:41:34,705 - MonzoETL - INFO - Monzo client credentials: {'monzo_refresh_token': 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6IlBwQ1cvc05JcS9NYUx4V3NmUWpQIiwianRpIjoicmVmdG9rXzAwMDBBb2xadGF2azFta3c2S1ZLZHQiLCJ0eXAiOiJydCIsInYiOiI2In0.WGUdAW7gTWxK_NeB-rgE3fpt6pwGpYS2V89Gf_iZsIDZRyshH65zNdXLRSS-rs7RbDyT_9aTG8hPHnwIknmndg', 'monzo_client_id': 'oauth2client_0000AoWDd0K3FrGVLstKan', 'monzo_client_secret': 'mnzconf.i1KIMvrG2ybs/oPFkanS/1qxmvU5oEDfDfXu6hg2vk9GZcpa0AsmcbhZoDJHzfDtcDZX8umC2lKPk9aiNaLzOQ==', 'monzo_account_id': 'acc_00009lqIsPMZoV0hiCGNft'}
+2024-12-06 10:41:35,228 - MonzoETL - INFO - Successfully downloaded database file from S3
+2024-12-06 10:41:35,228 - MonzoETL - INFO - Successfully downloaded database file from S3
+2024-12-06 10:41:35,229 - MonzoETL - INFO - Initialising database tables
+2024-12-06 10:41:35,229 - MonzoETL - INFO - Initialising database tables
+2024-12-06 10:41:35,255 - MonzoETL - INFO - Database tables created successfully
+2024-12-06 10:41:35,255 - MonzoETL - INFO - Database tables created successfully
+2024-12-06 10:41:35,255 - MonzoETL - INFO - Retrieving data from Monzo API
+2024-12-06 10:41:35,255 - MonzoETL - INFO - Retrieving data from Monzo API
+2024-12-06 10:41:35,339 - MonzoETL - ERROR - Failed to retrieve data: 401 Client Error: Unauthorized for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A41%3A35.256715Z
+2024-12-06 10:41:35,339 - MonzoETL - ERROR - Failed to retrieve data: 401 Client Error: Unauthorized for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A41%3A35.256715Z
+2024-12-06 10:41:35,340 - MonzoETL - ERROR - ETL process failed: 401 Client Error: Unauthorized for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A41%3A35.256715Z
+2024-12-06 10:41:35,340 - MonzoETL - ERROR - ETL process failed: 401 Client Error: Unauthorized for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A41%3A35.256715Z
+2024-12-06 10:41:35,741 - MonzoETL - INFO - Forced upload of logs to S3 completed
+2024-12-06 10:41:35,741 - MonzoETL - INFO - Forced upload of logs to S3 completed
+2024-12-06 10:41:35,840 - MonzoETL - INFO - Forced upload of logs to S3 completed
+2024-12-06 10:41:35,840 - MonzoETL - INFO - Forced upload of logs to S3 completed
+2024-12-06 10:42:11,284 - MonzoETL - INFO - Enabled S3 log uploading to bucket: monzo-db-bucket
+2024-12-06 10:42:11,285 - MonzoETL - INFO - Initialising MonzoSQLiteETL with database at /tmp/monzo_dashboard.db
+2024-12-06 10:42:11,286 - MonzoETL - INFO - Starting ETL process. Getting transactions for the previous 30 days
+2024-12-06 10:42:11,286 - MonzoETL - INFO - Monzo client access token test: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6InFyNThtQ1BPdGlDQXZHR2FBWkY4IiwianRpIjoiYWNjdG9rXzAwMDBBb2xaeEhNdWhSSDJ1UkI1SXciLCJ0eXAiOiJhdCIsInYiOiI2In0.lrsS2_nrobTBj-D7exF_DnnJWvEKnwv9yGc4_6m6WRf2b61a889YCGSpVJWO2vZFIg22GTEK8eG61UEm-SoOog
+2024-12-06 10:42:11,286 - MonzoETL - INFO - Monzo client credentials: {'monzo_refresh_token': 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6ImhGYjZkaUVLelEzK1JMTVRZNlF5IiwianRpIjoicmVmdG9rXzAwMDBBb2xadlE0OU9Oakh6eE5FWnUiLCJ0eXAiOiJydCIsInYiOiI2In0.21f5ZHiMv6mFuqePW4XT3nCdh8D7Y9snDAuJSQb2fQCi4WKVIkJIHd8v_doYS5U5JVStQVhLMUszKtsxgUhDHw', 'monzo_client_id': 'oauth2client_0000AoWDd0K3FrGVLstKan', 'monzo_client_secret': 'mnzconf.i1KIMvrG2ybs/oPFkanS/1qxmvU5oEDfDfXu6hg2vk9GZcpa0AsmcbhZoDJHzfDtcDZX8umC2lKPk9aiNaLzOQ==', 'monzo_account_id': 'acc_00009lqIsPMZoV0hiCGNft'}
+2024-12-06 10:42:11,784 - MonzoETL - INFO - Successfully downloaded database file from S3
+2024-12-06 10:42:11,785 - MonzoETL - INFO - Initialising database tables
+2024-12-06 10:42:11,812 - MonzoETL - INFO - Database tables created successfully
+2024-12-06 10:42:11,813 - MonzoETL - INFO - Retrieving data from Monzo API
+2024-12-06 10:42:11,958 - MonzoETL - ERROR - Failed to retrieve data: 403 Client Error: Forbidden for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A42%3A11.813130Z
+2024-12-06 10:42:11,958 - MonzoETL - ERROR - ETL process failed: 403 Client Error: Forbidden for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A42%3A11.813130Z
+2024-12-06 10:42:12,056 - MonzoETL - INFO - Forced upload of logs to S3 completed
+2024-12-06 10:43:24,828 - MonzoETL - INFO - Enabled S3 log uploading to bucket: monzo-db-bucket
+2024-12-06 10:43:24,828 - MonzoETL - INFO - Initialising MonzoSQLiteETL with database at /tmp/monzo_dashboard.db
+2024-12-06 10:43:24,829 - MonzoETL - INFO - Starting ETL process. Getting transactions for the previous 30 days
+2024-12-06 10:43:24,829 - MonzoETL - INFO - Monzo client access token test: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6Inc0cDh4VjlIY2lpcE5xQmhxWkltIiwianRpIjoiYWNjdG9rXzAwMDBBb2xhNEFMYkNlMWVRdmlTQ3YiLCJ0eXAiOiJhdCIsInYiOiI2In0.Y7asSs3RrCbI8uRWxa6xFQBtpbn587IelnuTlBqO7yt-zP2GHHXzGozWFLDRsBjz-OrkO1tc24NKebLTNKIo5w
+2024-12-06 10:43:24,830 - MonzoETL - INFO - Monzo client credentials: {'monzo_refresh_token': 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6Imw0V01XMFRkV0xiek52WTM5R1h0IiwianRpIjoicmVmdG9rXzAwMDBBb2xhM1FTM3FIZ0tQMDBuZ24iLCJ0eXAiOiJydCIsInYiOiI2In0.maK91Enjsojt0lJggDt5ditdZ1fCQuFGiS_oe7O0ouPqL2QE5MfS_VCw5dCogTDZvhbM9Kgqw6STfDpx07KD2A', 'monzo_client_id': 'oauth2client_0000AoWDd0K3FrGVLstKan', 'monzo_client_secret': 'mnzconf.i1KIMvrG2ybs/oPFkanS/1qxmvU5oEDfDfXu6hg2vk9GZcpa0AsmcbhZoDJHzfDtcDZX8umC2lKPk9aiNaLzOQ==', 'monzo_account_id': 'acc_00009lqIsPMZoV0hiCGNft'}
+2024-12-06 10:43:25,348 - MonzoETL - INFO - Successfully downloaded database file from S3
+2024-12-06 10:43:25,349 - MonzoETL - INFO - Initialising database tables
+2024-12-06 10:43:25,376 - MonzoETL - INFO - Database tables created successfully
+2024-12-06 10:43:25,376 - MonzoETL - INFO - Retrieving data from Monzo API
+2024-12-06 10:43:25,500 - MonzoETL - ERROR - Failed to retrieve data: 403 Client Error: Forbidden for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A43%3A25.377508Z
+2024-12-06 10:43:25,501 - MonzoETL - ERROR - ETL process failed: 403 Client Error: Forbidden for url: https://api.monzo.com/transactions?account_id=acc_00009lqIsPMZoV0hiCGNft&limit=200&expand%5B%5D=merchant&since=2024-11-06T10%3A43%3A25.377508Z
+2024-12-06 10:43:25,605 - MonzoETL - INFO - Forced upload of logs to S3 completed
+2024-12-06 10:46:09,156 - MonzoETL - INFO - Enabled S3 log uploading to bucket: monzo-db-bucket
+2024-12-06 10:46:09,157 - MonzoETL - INFO - Initialising MonzoSQLiteETL with database at /tmp/monzo_dashboard.db
+2024-12-06 10:46:09,157 - MonzoETL - INFO - Starting ETL process. Getting transactions for the previous 30 days
+2024-12-06 10:46:09,158 - MonzoETL - INFO - Monzo client access token test: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6Ikt4TTQ5UC9WeWF3Q0NIRHE5VGk2IiwianRpIjoiYWNjdG9rXzAwMDBBb2xhSktJRVZWdXpqQ25wTTkiLCJ0eXAiOiJhdCIsInYiOiI2In0.XBXPVcpS3Z0fo5zYCXnmkzv_DSRsgssPGMkYyIgWu8Q9kvheYEdzcJ8KFdR08MiAYVe3SHUZ9kLtjdX-DoOerg
+2024-12-06 10:46:09,158 - MonzoETL - INFO - Monzo client credentials: {'monzo_refresh_token': 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlYiI6Ik91RmtYL1VYN3RCVmpDdEJaUy9uIiwianRpIjoicmVmdG9rXzAwMDBBb2xhSUp1Z1F4Qk1mM0dCTGwiLCJ0eXAiOiJydCIsInYiOiI2In0.kOgsGK-aQEO7vB9Tw-VraUiJK40DQiD_lzMYXSWJbj6o0Njot3LAW1wdFeuN61ff32pMjH72Hs0zt4QhiRi8kQ', 'monzo_client_id': 'oauth2client_0000AoWDd0K3FrGVLstKan', 'monzo_client_secret': 'mnzconf.i1KIMvrG2ybs/oPFkanS/1qxmvU5oEDfDfXu6hg2vk9GZcpa0AsmcbhZoDJHzfDtcDZX8umC2lKPk9aiNaLzOQ==', 'monzo_account_id': 'acc_00009lqIsPMZoV0hiCGNft'}
+2024-12-06 10:46:09,670 - MonzoETL - INFO - Successfully downloaded database file from S3
+2024-12-06 10:46:09,671 - MonzoETL - INFO - Initialising database tables
+2024-12-06 10:46:09,699 - MonzoETL - INFO - Database tables created successfully
+2024-12-06 10:46:09,699 - MonzoETL - INFO - Retrieving data from Monzo API
+2024-12-06 10:46:10,307 - MonzoETL - INFO - Processing 55 transactions
+2024-12-06 10:46:10,309 - MonzoETL - INFO - Processing balance data
+2024-12-06 10:46:10,310 - MonzoETL - INFO - Processing 7 pots
+2024-12-06 10:46:10,310 - MonzoETL - INFO - Successfully inserted 7 pots
+2024-12-06 10:46:10,509 - MonzoETL - INFO - Successfully uploaded database file from S3
+2024-12-06 10:46:10,509 - MonzoETL - INFO - ETL process completed successfully
+2024-12-06 10:46:10,598 - MonzoETL - INFO - Forced upload of logs to S3 completed
