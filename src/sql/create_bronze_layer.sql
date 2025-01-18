@@ -1,0 +1,65 @@
+CREATE TABLE IF NOT EXISTS bronze_transactions (
+    id TEXT PRIMARY KEY,                                
+    description TEXT,
+    amount INTEGER NOT NULL,
+    currency TEXT NOT NULL,
+    created TIMESTAMP NOT NULL,
+    category TEXT,
+    notes TEXT,
+    is_load BOOLEAN,
+    settled TIMESTAMP,
+    local_amount INTEGER,
+    local_currency TEXT,
+    counterparty_name TEXT,
+    counterparty_account_num INTEGER,
+    counterparty_sort_code INTEGER,
+    merchant_id TEXT,
+    merchant_name TEXT,
+    merchant_category TEXT,
+    merchant_logo TEXT,
+    merchant_emoji TEXT,
+    merchant_online BOOLEAN,
+    merchant_atm BOOLEAN,
+    merchant_address TEXT,
+    merchant_city TEXT,
+    merchant_postcode TEXT,
+    merchant_country TEXT,
+    merchant_latitude REAL,
+    merchant_longitude REAL,
+    merchant_google_places_id TEXT,
+    merchant_suggested_tags TEXT,
+    merchant_foursquare_id TEXT,
+    merchant_website TEXT,
+    date_retrieved TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS bronze_balance (
+    balance INTEGER,
+    total_balance INTEGER,
+    currency TEXT,
+    spend_today INTEGER,
+    date_retrieved TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS bronze_pots (
+    id TEXT,
+    style TEXT,
+    balance INTEGER,
+    currency TEXT,
+    type TEXT,
+    product_id TEXT,
+    current_account_id TEXT,
+    cover_image_url TEXT,
+    isa_wrapper BOOLEAN,
+    round_up BOOLEAN,
+    round_up_multiplier INTEGER,
+    is_tax_pot BOOLEAN,
+    created TIMESTAMP,
+    updated TIMESTAMP,
+    deleted BOOLEAN,
+    locked BOOLEAN,
+    available_for_bills BOOLEAN,
+    has_virtual_cards BOOLEAN,
+    date_retrieved TIMESTAMP
+);

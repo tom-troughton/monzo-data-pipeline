@@ -1,5 +1,5 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from monzo_api_client import get_secret
+from src.utils import get_secret
 import webbrowser
 import urllib.parse
 import requests

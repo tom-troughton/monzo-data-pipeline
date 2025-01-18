@@ -13,6 +13,9 @@ RUN pip install -r requirements.txt
 # Copy the entire src directory
 COPY src ${LAMBDA_TASK_ROOT}/src
 
+# Copy the .env file
+COPY .env ${LAMBDA_TASK_ROOT}/.env
+
 # Create logs directory in /tmp
 RUN mkdir -p /tmp/logs
 

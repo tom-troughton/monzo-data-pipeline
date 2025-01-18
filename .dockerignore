@@ -4,5 +4,5 @@
 archive/
 data/database_files/
 src/logs/monzo_etl.log
-src/.env
 deploy.bat
+deploy_test.bat
