@@ -7,4 +7,9 @@ services:
       - ./src/logs:/app/src/logs
     environment:
       - AWS_DEFAULT_REGION=eu-north-1
-    command: python src/main.py
+      - AWS_LAMBDA_FUNCTION_HANDLER=src.main.lambda_handler
+      - AWS_LAMBDA_FUNCTION_MEMORY=128
+      - AWS_LAMBDA_FUNCTION_TIMEOUT=900
+    ports:
+      - "9000:8080"
+    command: ["python", "-m", "awslambdaric", "src.main.lambda_handler"]

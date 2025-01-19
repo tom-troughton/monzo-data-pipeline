@@ -1,20 +1,32 @@
-# Dockerfile
-FROM python:3.12-slim
+FROM public.ecr.aws/lambda/python:3.12
 
-WORKDIR /app
+# Set AWS Region
+ENV AWS_DEFAULT_REGION=eu-north-1
+ENV AWS_REGION=eu-north-1
 
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+# Copy requirements.txt
+COPY requirements.txt ${LAMBDA_TASK_ROOT}
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN pip install -r requirements.txt
 
 # Copy the entire src directory
-COPY src/ /app/src/
+COPY src ${LAMBDA_TASK_ROOT}/src
 
-# Create logs directory
-RUN mkdir -p /app/src/logs
+# Copy the .env file
+COPY .env ${LAMBDA_TASK_ROOT}/.env
 
-# Command to run the ETL
-CMD ["python", "src/main.py"]
+# Create logs directory in /tmp
+RUN mkdir -p /tmp/logs
+
+# Debug: List contents
+RUN echo "Contents of ${LAMBDA_TASK_ROOT}:" && \
+    ls -la ${LAMBDA_TASK_ROOT} && \
+    echo "\nContents of ${LAMBDA_TASK_ROOT}/src:" && \
+    ls -la ${LAMBDA_TASK_ROOT}/src
+
+# Add both directories to PYTHONPATH
+ENV PYTHONPATH "${LAMBDA_TASK_ROOT}:${LAMBDA_TASK_ROOT}/src"
+
+# Set the handler
+CMD [ "src.main.lambda_handler" ]

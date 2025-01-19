@@ -1,99 +1,8 @@
 import json
-import boto3
 import requests
-from datetime import datetime, timedelta, UTC
-
-class MonzoTokenManager:
-    def __init__(self, client_id: str, client_secret: str, table_name: str):
-        """
-        Initialise MonzoTokenManager with Monzo credentials and DynamoDB table name.
-        
-        Args:
-            client_id (str): Monzo API client ID
-            client_secret (str): Monzo API client secret
-            table_name (str): Name of the DynamoDB table for token storage
-        """
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.table_name = table_name
-        self.dynamodb = boto3.resource('dynamodb')
-
-    def store_tokens(self, tokens):
-        """
-        Store tokens in DynamoDB.
-        
-        Args:
-            tokens (dict): Token data including access_token, refresh_token, and expires_in
-        """
-        table = self.dynamodb.Table(self.table_name)
-        expiry = datetime.now(UTC) + timedelta(seconds=tokens['expires_in'])
-        
-        table.put_item(Item={
-            'token_id': 'current',
-            'access_token': tokens['access_token'],
-            'refresh_token': tokens['refresh_token'],
-            'expires_at': expiry.isoformat(),
-            'updated_at': datetime.now(UTC).isoformat()
-        })
-
-    def get_stored_tokens(self):
-        """Retrieve tokens from DynamoDB."""
-        table = self.dynamodb.Table(self.table_name)
-        response = table.get_item(Key={'token_id': 'current'})
-        return response.get('Item')
-
-    def refresh_token(self, refresh_token):
-        """
-        Get new access token using refresh token.
-        
-        Args:
-            refresh_token (str): The refresh token to use
-        
-        Returns:
-            dict: New token data
-        """
-        response = requests.post(
-            'https://api.monzo.com/oauth2/token',
-            data={
-                'grant_type': 'refresh_token',
-                'client_id': self.client_id,
-                'client_secret': self.client_secret,
-                'refresh_token': refresh_token
-            }
-        )
-        return response.json()
-
-    def get_valid_token(self):
-        """
-        Get a valid Monzo access token, refreshing if necessary.
-        
-        Returns:
-            dict: Response containing either a valid access token or an error
-        """
-        stored_tokens = self.get_stored_tokens()
-        
-        if not stored_tokens:
-            return {
-                'statusCode': 400,
-                'body': json.dumps({
-                    'error': 'No valid tokens found. Initial authentication required.'
-                })
-            }
-
-        expires_at = datetime.fromisoformat(stored_tokens['expires_at'])
-        
-        if expires_at - datetime.now(UTC) < timedelta(minutes=5):
-            new_tokens = self.refresh_token(stored_tokens['refresh_token'])
-            self.store_tokens(new_tokens)
-            return {
-                'statusCode': 200,
-                'body': json.dumps({'access_token': new_tokens['access_token']})
-            }
-        
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'access_token': stored_tokens['access_token']})
-        }
+from datetime import datetime
+from src.utils import get_secret
+from .token_manager import MonzoTokenManager
 
 class MonzoAPIClient:
     """
@@ -312,10 +221,3 @@ class MonzoAPIClient:
             return balance
         else:
             response.raise_for_status()
-
-def get_secret(secret_name):
-    """Retrieve secret from AWS Secrets Manager"""
-    session = boto3.session.Session()
-    client = session.client('secretsmanager')
-    response = client.get_secret_value(SecretId=secret_name)
-    return json.loads(response['SecretString'])
