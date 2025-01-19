@@ -13,15 +13,17 @@ A Python ETL pipeline for extracting transaction data from Monzo's API and loadi
 
 ## Pipeline flowchart
 
-```mermaid
-graph TD;
-    A[Fetch personal finance data from Monzo API] --> B[Transform data]
     B --> C[Load data into SQLite database]
     C --> D[Upload database to S3]
     D --> E[Log operations locally and to S3]
 
+```mermaid
+graph TD;
+    A[Fetch personal finance data from Monzo API] --> B[Transform data];
+
+
 ## Directory Structure
-```
+```bash
 monzo-data-eng/ 
 ├─── data/
 ├─── notebooks/
@@ -60,3 +62,4 @@ monzo-data-eng/
 ├─── README.md
 ├─── docker-compose.yaml
 └─── requirements.txt
+```
