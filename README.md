@@ -58,8 +58,9 @@ monzo-data-eng/
 │   └── test_transform.py
 ├─── .dockerignore
 ├─── .gitignore
+├─── docker_deploy.bat
+├─── docker-compose.yaml
 ├─── Dockerfile
 ├─── README.md
-├─── docker-compose.yaml
 └─── requirements.txt
 ```
