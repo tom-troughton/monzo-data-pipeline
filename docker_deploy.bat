@@ -2,7 +2,7 @@
 setlocal
 
 :: Configuration variables - sample values
-set AWS_ACCOUNT=123
+set AWS_ACCOUNT=123123123123
 set AWS_REGION=xx-xxxx-x
 set IMAGE_NAME=image-name
 set ECR_REPO=%AWS_ACCOUNT%.dkr.ecr.%AWS_REGION%.amazonaws.com
