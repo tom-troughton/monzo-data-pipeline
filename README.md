@@ -19,7 +19,7 @@ A Python ETL pipeline for extracting transaction data from Monzo's API and loadi
 
 ```mermaid
 graph TD;
-    A[Download SQLite database from S3 (create db if first run)] --> B[Fetch personal finance data from MonzoAPI];
+    A[Download SQLite database from S3 - create db if first run] --> B[Fetch personal finance data from MonzoAPI];
     B --> C[Load data into bronze layer of database];
     C --> D[Transform bronze layer to silver layer];
     D --> E[Upload database back to S3];
