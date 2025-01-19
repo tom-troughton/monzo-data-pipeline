@@ -20,7 +20,7 @@ A Python ETL pipeline for extracting transaction data from Monzo's API and loadi
 ```mermaid
 graph TD;
     A[Fetch personal finance data from Monzo API] --> B[Transform data];
-
+```
 
 ## Directory Structure
 ```bash
