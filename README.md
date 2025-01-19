@@ -1,21 +1,18 @@
 # Monzo ETL Pipeline
 
-A Python ETL pipeline for extracting transaction data from Monzo's API and loading it into a SQLite database stored in an S3 bucket, with logging to S3.
+A Python ETL pipeline for extracting transaction data from Monzo's API and loading it into a SQLite database stored in an S3 bucket, with logging to S3. The pipeline is hosted on AWS Lambda and automated using Eventbridge. The AWS Lambda function is created from a Docker container image.
 
 ## Overview
 
-- Fetch transaction data from the Monzo API using OAuth2 authentication
+- Data stored in SQLite database in S3 for cost effectiveness
+- Transactions data is fetched using Monzo API
 - MonzoAPIClient provides interface with Monzo API
 - MonzoTokenManager automates API token management 
-- Transform and load the data into a SQLite database
-- Upload database backups to S3
-- Log pipeline operations both locally and to S3
+- Data is loaded into SQLite database and transformed
+- Database is uploaded back to S3
+- Pipeline operations are logged and stored in S3
 
 ## Pipeline flowchart
-
-    B --> C[Load data into SQLite database]
-    C --> D[Upload database to S3]
-    D --> E[Log operations locally and to S3]
 
 ```mermaid
 graph TD;
