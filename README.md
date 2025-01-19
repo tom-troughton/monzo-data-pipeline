@@ -12,7 +12,7 @@ A Python ETL pipeline for extracting transaction data from Monzo's API and loadi
 - Database is uploaded back to S3
 - Pipeline operations are logged and stored in S3
 
-## Pipeline flowchart
+## Pipeline Flowchart
 
 ```mermaid
 graph TD;
