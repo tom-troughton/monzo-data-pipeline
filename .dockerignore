@@ -6,3 +6,4 @@ data/database_files/
 src/logs/monzo_etl.log
 deploy.bat
 deploy_test.bat
+docker_deploy.bat
