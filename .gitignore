@@ -1,8 +1,7 @@
 .monzo_env/
 archive/
 data/database_files/
-src/logs/monzo_etl.log
-src/.env
+src/
 .env
 deploy.bat
 deploy_test.bat
@@ -11,4 +10,3 @@ bigquery_creds.json
 monzo_utils.egg-info/
 deploy/deploy_extract.bat
 deploy/deploy_load_staging.bat
-src/
