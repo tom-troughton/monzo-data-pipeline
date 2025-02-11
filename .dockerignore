@@ -7,3 +7,7 @@ src/logs/monzo_etl.log
 deploy.bat
 deploy_test.bat
 docker_deploy.bat
+bigquery_creds.json
+.pytest_cache
+monzo_utils.egg-info/
+deploy/deploy_extract.bat
